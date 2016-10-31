@@ -6,7 +6,7 @@ from facepy import GraphAPI
 
 login = str(sys.argv[1])
 password = str(sys.argv[2])
-# target_id = str(sys.argv[3])
+target_id = str(sys.argv[3])
 oauth_access_token = 'yourapitoken'
 
 graph = GraphAPI(oauth_access_token)
@@ -43,6 +43,6 @@ def get_event_attendees(event_id):
     return users
 
 
-attendees = get_event_attendees('1677749875886802')
+attendees = get_event_attendees(target_id)
 for attendee in attendees:
     print get_user_info(attendee['id'])
