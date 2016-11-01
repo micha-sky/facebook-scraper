@@ -26,16 +26,19 @@ br.submit()
 
 
 def get_user_info(user_id):
-    fb_url = "https://www.facebook.com/{0}".format(user_id)
+    # fb_url = "https://www.facebook.com/{0}".format(user_id)
     print "Processing user id: {0}".format(user_id)
-    # fb_url = "https://www.facebook.com/profile.php?id={0}&sk=about".format(user_id)
+    fb_url = "https://www.facebook.com/profile.php?id={0}&sk=about".format(user_id)
 
     br.open(fb_url)
     all_html = br.response().get_data()
     soup = BeautifulSoup(all_html, 'html.parser')
     info = soup.find(type="application/ld+json")
-    user_info = json.loads(info.get_text())
-    return user_info
+    if info is None:
+        print 'Error fetching data for user'
+    else:
+        user_info = json.loads(info.get_text())
+        return user_info
 
 
 def get_event_attendees(event_id):

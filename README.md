@@ -5,3 +5,6 @@ Usage:
 python scraper.py login, password, event_id
 
 graph api token is hardcoded in oauth_access_token.
+
+Prerequisites: mechanize, facepy, beautifulsoup
+(use pip install for these)
