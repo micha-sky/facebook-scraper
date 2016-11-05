@@ -3,7 +3,7 @@ import sys
 from bs4 import BeautifulSoup
 import json
 from facepy import GraphAPI
-
+import MySQLdb
 
 login = str(sys.argv[1])
 password = str(sys.argv[2])
@@ -14,7 +14,7 @@ graph = GraphAPI(oauth_access_token)
 
 url = "https://m.facebook.com/login.php"
 
-#login to facebook
+# login to facebook
 br = mechanize.Browser()
 br.set_handle_robots(False)
 br.addheaders = [('User-agent','Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/45.0.2454101')]
@@ -23,6 +23,26 @@ br.select_form(nr=0)
 br.form['email'] = login
 br.form['pass'] = password
 br.submit()
+
+
+# init db
+def init_db():
+    db = MySQLdb.connect("localhost", "user", "password", "database")
+    cursor = db.cursor()
+    sql = """CREATE TABLE IF NOT EXISTS facebook (
+        event_id int(20) NOT NULL,
+        user_id int(20) NOT NULL,
+        user_name CHAR(20),
+        age INT,
+        sex CHAR(1),
+        city VARCHAR(50),
+        hometown VARCHAR(50) )"""
+
+    cursor.execute(sql)
+    db.close()
+
+
+init_db()
 
 
 def get_user_info(user_id):
@@ -64,3 +84,18 @@ def get_event_attendees(event_id):
 attendees = get_event_attendees(target_id)
 for attendee in attendees:
     print get_user_info2(attendee['id'])
+
+
+def write_data(event_id, user):
+    db = MySQLdb.connect("localhost", "user", "password", "database")
+    cursor = db.cursor()
+
+    name = user['name']
+    city = user['city']
+
+    try:
+        cursor.execute("INSERT INTO facebook(event_id, user_id, user_name, ) VALUES (%s, %s, %s)",
+                       (event_id, name, city))
+        db.commit()
+    except():
+        db.rollback()

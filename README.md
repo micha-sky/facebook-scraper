@@ -1,5 +1,6 @@
 # facebook-scraper
 Scrapes public data from people who attended facebook event.
+Saves data to mysql db
 
 Usage:
 python scraper.py login, password, event_id
